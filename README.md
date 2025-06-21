@@ -123,32 +123,6 @@ python app.py
 - 过期预警
 - 价格管理
 
-## 数据库查询示例
-
-### 多表连接查询
-查询2024年入职医生的治疗病人数量：
-```sql
-SELECT s.name AS 医生姓名, COUNT(DISTINCT c.pt_id) AS 治疗病人数量
-FROM staff_info s 
-INNER JOIN case_record c ON s.staff_id = c.doctor_id
-WHERE s.position = '医生' AND YEAR(s.hire_date) = 2024
-GROUP BY s.staff_id, s.name
-ORDER BY 治疗病人数量 DESC;
-```
-
-### 高级查询
-查询用药种类大于1的病人：
-```sql
-SELECT pa.pt_id, pa.name, c.description, c.diagnosis, 
-       COUNT(DISTINCT pr.drug_id) AS 用药种类数量
-FROM patient_info pa
-INNER JOIN case_record c ON pa.pt_id = c.pt_id
-INNER JOIN prescription pr ON c.case_id = pr.case_id
-GROUP BY pa.pt_id, pa.name, c.description, c.diagnosis
-HAVING COUNT(DISTINCT pr.drug_id) > 1
-ORDER BY pa.pt_id;
-```
-
 ## 注意事项
 
 1. **数据库权限**：确保MySQL用户有足够权限创建数据库和表
@@ -170,4 +144,4 @@ ORDER BY pa.pt_id;
 
 ## 联系信息
 
-如有问题，请联系项目开发团队。 
+如有问题，请+Q:3067254872 
