@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}病人详情 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-user-injured"></i> 病人详情</h1>
+    <div>
+        <a href="{{ url_for('patient_edit', pt_id=patient.pt_id) }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> 编辑
+        </a>
+        <a href="{{ url_for('patient_list') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> 返回
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">基本信息</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">姓名</label>
+                        <p class="fw-bold fs-5">{{ patient.name }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">性别</label>
+                        <p>{{ patient.gender }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">年龄</label>
+                        <p>{{ patient.age }} 岁</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">电话</label>
+                        <p>{{ patient.phone }}</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">身份证号</label>
+                        <p>{{ patient.id_card or '未填写' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">血型</label>
+                        <p>
+                            {% if patient.blood_type %}
+                            <span class="badge bg-info">{{ patient.blood_type }}型</span>
+                            {% else %}
+                            <span class="text-muted">未知</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label class="form-label text-muted">地址</label>
+                        <p>{{ patient.address or '未填写' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">紧急联系人</h5>
+            </div>
+            <div class="card-body">
+                <label class="form-label text-muted">联系人</label>
+                <p>{{ patient.emergency_contact or '未填写' }}</p>
+                <label class="form-label text-muted">联系电话</label>
+                <p>{{ patient.emergency_phone or '未填写' }}</p>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">过敏史</h5>
+            </div>
+            <div class="card-body">
+                {% if patient.allergy_history %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {{ patient.allergy_history }}
+                </div>
+                {% else %}
+                <p class="text-success">
+                    <i class="fas fa-check-circle"></i> 无过敏史
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

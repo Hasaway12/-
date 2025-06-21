@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}编辑病历 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-file-medical-alt"></i> 编辑病历</h1>
+    <a href="{{ url_for('case_view', case_id=case.case_id) }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> 返回
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="pt_id" class="form-label">病人 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pt_id" name="pt_id" required>
+                            <option value="">请选择病人</option>
+                            {% for patient in patients %}
+                            <option value="{{ patient.pt_id }}" {% if patient.pt_id == case.pt_id %}selected{% endif %}>
+                                {{ patient.name }} - {{ patient.id_card }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="doctor_id" class="form-label">主治医生 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="doctor_id" name="doctor_id" required>
+                            <option value="">请选择医生</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.staff_id }}" {% if doctor.staff_id == case.doctor_id %}selected{% endif %}>
+                                {{ doctor.name }} - {{ doctor.department }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="visit_date" class="form-label">就诊日期 <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="visit_date" name="visit_date" value="{{ case.visit_date.strftime('%Y-%m-%d') }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="visit_time" class="form-label">就诊时间 <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control" id="visit_time" name="visit_time" value="{{ case.visit_time.strftime('%H:%M') }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="department" class="form-label">科室 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="department" name="department" required>
+                            <option value="">请选择科室</option>
+                            <option value="内科" {% if case.department == '内科' %}selected{% endif %}>内科</option>
+                            <option value="外科" {% if case.department == '外科' %}selected{% endif %}>外科</option>
+                            <option value="妇科" {% if case.department == '妇科' %}selected{% endif %}>妇科</option>
+                            <option value="儿科" {% if case.department == '儿科' %}selected{% endif %}>儿科</option>
+                            <option value="眼科" {% if case.department == '眼科' %}selected{% endif %}>眼科</option>
+                            <option value="口腔科" {% if case.department == '口腔科' %}selected{% endif %}>口腔科</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="status" class="form-label">病历状态 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="就诊中" {% if case.status == '就诊中' %}selected{% endif %}>就诊中</option>
+                            <option value="已完成" {% if case.status == '已完成' %}selected{% endif %}>已完成</option>
+                            <option value="需复诊" {% if case.status == '需复诊' %}selected{% endif %}>需复诊</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="nurse_id" class="form-label">护士</label>
+                        <select class="form-select" id="nurse_id" name="nurse_id">
+                            <option value="">请选择护士</option>
+                            {% for nurse in nurses %}
+                            <option value="{{ nurse.staff_id }}" {% if nurse.staff_id == case.nurse_id %}selected{% endif %}>
+                                {{ nurse.name }} - {{ nurse.department }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="chief_complaint" class="form-label">主诉</label>
+                <textarea class="form-control" id="chief_complaint" name="chief_complaint" rows="2" placeholder="病人的主要症状和就诊原因">{{ case.chief_complaint or '' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="present_illness" class="form-label">现病史</label>
+                <textarea class="form-control" id="present_illness" name="present_illness" rows="3" placeholder="病人现在疾病的发生、发展、变化过程">{{ case.present_illness or '' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="physical_examination" class="form-label">体格检查</label>
+                <textarea class="form-control" id="physical_examination" name="physical_examination" rows="3" placeholder="体温、血压、心率等体格检查结果">{{ case.physical_examination or '' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="diagnosis" class="form-label">诊断 <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="diagnosis" name="diagnosis" rows="2" placeholder="医生诊断结果" required>{{ case.diagnosis }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="therapy" class="form-label">治疗方案 <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="therapy" name="therapy" rows="3" placeholder="治疗措施和方法" required>{{ case.therapy }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="doctor_advice" class="form-label">医嘱</label>
+                <textarea class="form-control" id="doctor_advice" name="doctor_advice" rows="2" placeholder="医生的指导建议">{{ case.doctor_advice or '' }}</textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="follow_up_date" class="form-label">复诊日期</label>
+                        <input type="date" class="form-control" id="follow_up_date" name="follow_up_date" value="{% if case.follow_up_date %}{{ case.follow_up_date.strftime('%Y-%m-%d') }}{% endif %}">
+                        <div class="form-text">如不需要复诊，请留空</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="cost" class="form-label">费用</label>
+                        <div class="input-group">
+                            <span class="input-group-text">¥</span>
+                            <input type="number" class="form-control" id="cost" name="cost" step="0.01" min="0" value="{{ case.cost or '' }}" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="description" class="form-label">病历描述 <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="description" name="description" rows="4" placeholder="详细的病历记录" required>{{ case.description }}</textarea>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('case_view', case_id=case.case_id) }}" class="btn btn-outline-secondary me-2">取消</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 保存更改
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

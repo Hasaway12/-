@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}编辑预约 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-calendar-edit"></i> 编辑预约</h1>
+    <a href="{{ url_for('appointment_view', appointment_id=appointment.appointment_id) }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> 返回
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="pt_id" class="form-label">病人 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pt_id" name="pt_id" required>
+                            <option value="">请选择病人</option>
+                            {% for patient in patients %}
+                            <option value="{{ patient.pt_id }}" {% if patient.pt_id == appointment.pt_id %}selected{% endif %}>
+                                {{ patient.name }} - {{ patient.phone }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="doctor_id" class="form-label">医生 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="doctor_id" name="doctor_id" required>
+                            <option value="">请选择医生</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.staff_id }}" {% if doctor.staff_id == appointment.doctor_id %}selected{% endif %}>
+                                {{ doctor.name }} - {{ doctor.department }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="appointment_date" class="form-label">预约日期 <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="appointment_date" name="appointment_date" 
+                               value="{{ appointment.appointment_date.strftime('%Y-%m-%d') }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="appointment_time" class="form-label">预约时间 <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control" id="appointment_time" name="appointment_time" 
+                               value="{{ appointment.appointment_time.strftime('%H:%M') }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="department" class="form-label">科室 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="department" name="department" required>
+                            <option value="">请选择科室</option>
+                            <option value="内科" {% if appointment.department == '内科' %}selected{% endif %}>内科</option>
+                            <option value="外科" {% if appointment.department == '外科' %}selected{% endif %}>外科</option>
+                            <option value="儿科" {% if appointment.department == '儿科' %}selected{% endif %}>儿科</option>
+                            <option value="妇产科" {% if appointment.department == '妇产科' %}selected{% endif %}>妇产科</option>
+                            <option value="眼科" {% if appointment.department == '眼科' %}selected{% endif %}>眼科</option>
+                            <option value="耳鼻喉科" {% if appointment.department == '耳鼻喉科' %}selected{% endif %}>耳鼻喉科</option>
+                            <option value="口腔科" {% if appointment.department == '口腔科' %}selected{% endif %}>口腔科</option>
+                            <option value="皮肤科" {% if appointment.department == '皮肤科' %}selected{% endif %}>皮肤科</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="appointment_type" class="form-label">预约类型 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="appointment_type" name="appointment_type" required>
+                            <option value="">请选择类型</option>
+                            <option value="初诊" {% if appointment.appointment_type == '初诊' %}selected{% endif %}>初诊</option>
+                            <option value="复诊" {% if appointment.appointment_type == '复诊' %}selected{% endif %}>复诊</option>
+                            <option value="急诊" {% if appointment.appointment_type == '急诊' %}selected{% endif %}>急诊</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="status" class="form-label">预约状态 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="已预约" {% if appointment.status == '已预约' %}selected{% endif %}>已预约</option>
+                            <option value="已就诊" {% if appointment.status == '已就诊' %}selected{% endif %}>已就诊</option>
+                            <option value="已取消" {% if appointment.status == '已取消' %}selected{% endif %}>已取消</option>
+                            <option value="已完成" {% if appointment.status == '已完成' %}selected{% endif %}>已完成</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="receptionist_id" class="form-label">接待员</label>
+                        <select class="form-select" id="receptionist_id" name="receptionist_id">
+                            <option value="">请选择接待员（可选）</option>
+                            {% for receptionist in receptionists %}
+                            <option value="{{ receptionist.staff_id }}" {% if receptionist.staff_id == appointment.receptionist_id %}selected{% endif %}>
+                                {{ receptionist.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="symptoms" class="form-label">症状描述</label>
+                <textarea class="form-control" id="symptoms" name="symptoms" rows="3" placeholder="请简要描述患者症状">{{ appointment.symptoms or '' }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="notes" class="form-label">备注</label>
+                <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="其他备注信息">{{ appointment.notes or '' }}</textarea>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('appointment_view', appointment_id=appointment.appointment_id) }}" class="btn btn-outline-secondary me-2">取消</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 保存更改
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

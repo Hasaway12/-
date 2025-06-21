@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}编辑病人 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-user-edit"></i> 编辑病人信息</h1>
+    <a href="{{ url_for('patient_list') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> 返回
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">姓名 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ patient.name }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">性别 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="gender" name="gender" required>
+                            <option value="男" {% if patient.gender == '男' %}selected{% endif %}>男</option>
+                            <option value="女" {% if patient.gender == '女' %}selected{% endif %}>女</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="age" class="form-label">年龄 <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="age" name="age" value="{{ patient.age }}" min="0" max="150" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">联系电话 <span class="text-danger">*</span></label>
+                        <input type="tel" class="form-control" id="phone" name="phone" value="{{ patient.phone }}" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="id_card" class="form-label">身份证号</label>
+                        <input type="text" class="form-control" id="id_card" name="id_card" value="{{ patient.id_card or '' }}" maxlength="18">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="blood_type" class="form-label">血型</label>
+                        <select class="form-select" id="blood_type" name="blood_type">
+                            <option value="">请选择</option>
+                            <option value="A" {% if patient.blood_type == 'A' %}selected{% endif %}>A型</option>
+                            <option value="B" {% if patient.blood_type == 'B' %}selected{% endif %}>B型</option>
+                            <option value="AB" {% if patient.blood_type == 'AB' %}selected{% endif %}>AB型</option>
+                            <option value="O" {% if patient.blood_type == 'O' %}selected{% endif %}>O型</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="address" class="form-label">住址</label>
+                <textarea class="form-control" id="address" name="address" rows="2">{{ patient.address or '' }}</textarea>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="emergency_contact" class="form-label">紧急联系人</label>
+                        <input type="text" class="form-control" id="emergency_contact" name="emergency_contact" value="{{ patient.emergency_contact or '' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="emergency_phone" class="form-label">紧急联系电话</label>
+                        <input type="tel" class="form-control" id="emergency_phone" name="emergency_phone" value="{{ patient.emergency_phone or '' }}">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="allergy_history" class="form-label">过敏史</label>
+                <textarea class="form-control" id="allergy_history" name="allergy_history" rows="3" placeholder="如有过敏史，请详细描述过敏物质和症状">{{ patient.allergy_history or '' }}</textarea>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('patient_view', pt_id=patient.pt_id) }}" class="btn btn-outline-secondary me-2">取消</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 保存更改
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

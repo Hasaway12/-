@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}病历管理 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-file-medical"></i> 病历管理</h1>
+    <button class="btn btn-primary" onclick="addCase()">
+        <i class="fas fa-plus"></i> 新增病历
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">病历信息列表</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>病历ID</th>
+                        <th>病人姓名</th>
+                        <th>主治医生</th>
+                        <th>就诊日期</th>
+                        <th>科室</th>
+                        <th>主诉</th>
+                        <th>诊断</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in cases %}
+                    {% set case = row[0] %}
+                    <tr>
+                        <td>{{ case.case_id }}</td>
+                        <td>{{ row.patient_name }}</td>
+                        <td>{{ row.doctor_name }}</td>
+                        <td>{{ case.visit_date }}</td>
+                        <td>{{ case.department }}</td>
+                        <td>{{ case.chief_complaint|truncate(30) if case.chief_complaint else '暂无' }}</td>
+                        <td>{{ case.diagnosis|truncate(30) }}</td>
+                        <td>
+                            {% if case.status == '就诊中' %}
+                            <span class="badge bg-warning">{{ case.status }}</span>
+                            {% elif case.status == '已完成' %}
+                            <span class="badge bg-success">{{ case.status }}</span>
+                            {% elif case.status == '需复诊' %}
+                            <span class="badge bg-info">{{ case.status }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ case.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-info" title="查看" onclick="viewCase({{ case.case_id }})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-primary" title="编辑" onclick="editCase({{ case.case_id }})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">
+                            <i class="fas fa-file-medical fa-3x mb-3"></i>
+                            <p>暂无病历信息</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addCase() {
+    window.location.href = "{{ url_for('case_add') }}";
+}
+
+function viewCase(id) {
+    window.location.href = "{{ url_for('case_view', case_id=0) }}".replace('0', id);
+}
+
+function editCase(id) {
+    window.location.href = "{{ url_for('case_edit', case_id=0) }}".replace('0', id);
+}
+</script>
+{% endblock %} 

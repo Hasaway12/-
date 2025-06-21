@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}预约详情 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-calendar-alt"></i> 预约详情</h1>
+    <div>
+        <a href="{{ url_for('appointment_edit', appointment_id=appointment.appointment_id) }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> 编辑
+        </a>
+        <a href="{{ url_for('appointment_list') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> 返回
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">预约信息</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">预约ID</label>
+                        <p class="fw-bold">{{ appointment.appointment_id }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">预约状态</label>
+                        <p>
+                            {% if appointment.status == '已预约' %}
+                            <span class="badge bg-primary">{{ appointment.status }}</span>
+                            {% elif appointment.status == '已就诊' %}
+                            <span class="badge bg-success">{{ appointment.status }}</span>
+                            {% elif appointment.status == '已取消' %}
+                            <span class="badge bg-danger">{{ appointment.status }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ appointment.status }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">预约日期</label>
+                        <p class="fw-bold fs-5">{{ appointment.appointment_date.strftime('%Y年%m月%d日') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">预约时间</label>
+                        <p class="fw-bold fs-5">{{ appointment.appointment_time.strftime('%H:%M') }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">科室</label>
+                        <p>{{ appointment.department }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">预约类型</label>
+                        <p><span class="badge bg-info">{{ appointment.appointment_type }}</span></p>
+                    </div>
+                </div>
+                
+                {% if appointment.symptoms %}
+                <div class="mb-3">
+                    <label class="form-label text-muted">症状描述</label>
+                    <div class="bg-light p-3 rounded">
+                        {{ appointment.symptoms }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if appointment.notes %}
+                <div class="mb-3">
+                    <label class="form-label text-muted">备注</label>
+                    <div class="bg-light p-3 rounded">
+                        {{ appointment.notes }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">病人信息</h5>
+            </div>
+            <div class="card-body">
+                <label class="form-label text-muted">姓名</label>
+                <p class="fw-bold">{{ patient.name }}</p>
+                
+                <label class="form-label text-muted">性别</label>
+                <p>{{ patient.gender }}</p>
+                
+                <label class="form-label text-muted">年龄</label>
+                <p>{{ patient.age }} 岁</p>
+                
+                <label class="form-label text-muted">联系电话</label>
+                <p>{{ patient.phone }}</p>
+                
+                {% if patient.allergy_history %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>过敏史：</strong>{{ patient.allergy_history }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">医疗团队</h5>
+            </div>
+            <div class="card-body">
+                <label class="form-label text-muted">主治医生</label>
+                <p class="fw-bold">{{ doctor.name }}</p>
+                <p class="text-muted">{{ doctor.department }} - {{ doctor.position }}</p>
+                
+                {% if receptionist %}
+                <label class="form-label text-muted">接待员</label>
+                <p>{{ receptionist.name }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

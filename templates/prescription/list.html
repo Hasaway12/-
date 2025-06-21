@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}处方管理 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-prescription-bottle"></i> 处方管理</h1>
+    <button class="btn btn-primary" onclick="addPrescription()">
+        <i class="fas fa-plus"></i> 新增处方
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">处方信息列表</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>处方ID</th>
+                        <th>病历ID</th>
+                        <th>药品名称</th>
+                        <th>数量</th>
+                        <th>用法用量</th>
+                        <th>服用频率</th>
+                        <th>疗程</th>
+                        <th>价格</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in prescriptions %}
+                    {% set prescription = row[0] %}
+                    <tr>
+                        <td>{{ prescription.prescription_id }}</td>
+                        <td>{{ prescription.case_id }}</td>
+                        <td>{{ row.drug_name }}</td>
+                        <td>{{ prescription.quantity }}</td>
+                        <td>{{ prescription.dosage }}</td>
+                        <td>{{ prescription.frequency }}</td>
+                        <td>{{ prescription.duration }}</td>
+                        <td class="text-success">¥{{ prescription.price }}</td>
+                        <td>
+                            {% if prescription.status == '已开具' %}
+                            <span class="badge bg-warning">{{ prescription.status }}</span>
+                            {% elif prescription.status == '已配药' %}
+                            <span class="badge bg-info">{{ prescription.status }}</span>
+                            {% elif prescription.status == '已发药' %}
+                            <span class="badge bg-success">{{ prescription.status }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ prescription.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-info" title="查看" onclick="viewPrescription({{ prescription.prescription_id }})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-primary" title="编辑" onclick="editPrescription({{ prescription.prescription_id }})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="10" class="text-center text-muted">
+                            <i class="fas fa-prescription fa-3x mb-3"></i>
+                            <p>暂无处方信息</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addPrescription() {
+    window.location.href = "{{ url_for('prescription_add') }}";
+}
+
+function viewPrescription(id) {
+    window.location.href = "{{ url_for('prescription_view', prescription_id=0) }}".replace('0', id);
+}
+
+function editPrescription(id) {
+    window.location.href = "{{ url_for('prescription_edit', prescription_id=0) }}".replace('0', id);
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}编辑职工 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-user-edit"></i> 编辑职工</h1>
+    <a href="{{ url_for('staff_list') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> 返回列表
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">编辑职工信息 - {{ staff.name }}</h5>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label">姓名 *</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ staff.name }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="gender" class="form-label">性别 *</label>
+                    <select class="form-select" id="gender" name="gender" required>
+                        <option value="男" {{ 'selected' if staff.gender == '男' else '' }}>男</option>
+                        <option value="女" {{ 'selected' if staff.gender == '女' else '' }}>女</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="age" class="form-label">年龄 *</label>
+                    <input type="number" class="form-control" id="age" name="age" value="{{ staff.age }}" min="18" max="70" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">电话 *</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="{{ staff.phone }}" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="position" class="form-label">职位 *</label>
+                    <select class="form-select" id="position" name="position" required>
+                        <option value="医生" {{ 'selected' if staff.position == '医生' else '' }}>医生</option>
+                        <option value="护士" {{ 'selected' if staff.position == '护士' else '' }}>护士</option>
+                        <option value="接待员" {{ 'selected' if staff.position == '接待员' else '' }}>接待员</option>
+                        <option value="管理员" {{ 'selected' if staff.position == '管理员' else '' }}>管理员</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="department" class="form-label">科室</label>
+                    <select class="form-select" id="department" name="department">
+                        <option value="">请选择科室</option>
+                        <option value="内科" {{ 'selected' if staff.department == '内科' else '' }}>内科</option>
+                        <option value="外科" {{ 'selected' if staff.department == '外科' else '' }}>外科</option>
+                        <option value="儿科" {{ 'selected' if staff.department == '儿科' else '' }}>儿科</option>
+                        <option value="妇科" {{ 'selected' if staff.department == '妇科' else '' }}>妇科</option>
+                        <option value="急诊科" {{ 'selected' if staff.department == '急诊科' else '' }}>急诊科</option>
+                        <option value="前台" {{ 'selected' if staff.department == '前台' else '' }}>前台</option>
+                        <option value="行政" {{ 'selected' if staff.department == '行政' else '' }}>行政</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">邮箱</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ staff.email or '' }}">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="hire_date" class="form-label">入职日期 *</label>
+                    <input type="date" class="form-control" id="hire_date" name="hire_date" value="{{ staff.hire_date.strftime('%Y-%m-%d') }}" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="salary" class="form-label">薪资 *</label>
+                    <div class="input-group">
+                        <span class="input-group-text">¥</span>
+                        <input type="number" class="form-control" id="salary" name="salary" value="{{ staff.salary }}" step="0.01" min="0" required>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="status" class="form-label">状态 *</label>
+                    <select class="form-select" id="status" name="status" required>
+                        <option value="在职" {{ 'selected' if staff.status == '在职' else '' }}>在职</option>
+                        <option value="离职" {{ 'selected' if staff.status == '离职' else '' }}>离职</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ url_for('staff_list') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> 取消
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 更新
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

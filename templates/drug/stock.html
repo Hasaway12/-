@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}库存调整 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-boxes"></i> 库存调整</h1>
+    <a href="{{ url_for('drug_list') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> 返回
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">{{ drug.name }} - 库存调整</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="bg-light p-3 rounded">
+                    <h6 class="text-muted">当前库存</h6>
+                    <h2 class="text-primary">{{ drug.stock_quantity }} {{ drug.unit }}</h2>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-light p-3 rounded">
+                    <h6 class="text-muted">药品规格</h6>
+                    <p class="mb-1"><strong>规格：</strong>{{ drug.specification or '暂无' }}</p>
+                    <p class="mb-1"><strong>单价：</strong>¥{{ drug.price }}</p>
+                    <p class="mb-0"><strong>厂家：</strong>{{ drug.manufacturer or '未知' }}</p>
+                </div>
+            </div>
+        </div>
+
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="adjustment" class="form-label">调整数量 <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="adjustment" name="adjustment" placeholder="输入正数增加库存，负数减少库存" required>
+                        <div class="form-text">
+                            例如：+50 表示入库50个，-20 表示出库20个
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">预期库存</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="expected_stock" readonly>
+                            <span class="input-group-text">{{ drug.unit }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('drug_list') }}" class="btn btn-outline-secondary me-2">取消</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 确认调整
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('adjustment').addEventListener('input', function() {
+    const adjustment = parseInt(this.value) || 0;
+    const currentStock = {{ drug.stock_quantity }};
+    const expectedStock = Math.max(0, currentStock + adjustment);
+    document.getElementById('expected_stock').value = expectedStock;
+});
+</script>
+{% endblock %} 

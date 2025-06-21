@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}医疗信息管理系统{% endblock %}</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: #2c3e50 !important;
+        }
+        .nav-link {
+            color: #34495e !important;
+        }
+        .nav-link:hover {
+            color: #3498db !important;
+            background-color: #ecf0f1;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-hospital"></i> 医疗信息管理系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if session.logged_in %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> {{ session.username }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt"></i> 登出
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- 侧边栏 -->
+            <div class="col-md-2 col-lg-2 sidebar">
+                <div class="list-group list-group-flush">
+                    <a href="{{ url_for('staff_list') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-users"></i> 职工管理
+                    </a>
+                    <a href="{{ url_for('patient_list') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-injured"></i> 病人管理
+                    </a>
+                    <a href="{{ url_for('drug_list') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-pills"></i> 药品管理
+                    </a>
+                    <a href="{{ url_for('appointment_list') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-calendar-check"></i> 预约管理
+                    </a>
+                    <a href="{{ url_for('case_list') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-file-medical"></i> 病历管理
+                    </a>
+                    <a href="{{ url_for('prescription_list') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-prescription-bottle"></i> 处方管理
+                    </a>
+                </div>
+            </div>
+
+            <!-- 主内容区域 -->
+            <div class="col-md-10 col-lg-10">
+                <div class="container-fluid py-4">
+                    <!-- 消息闪现 -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <!-- 页面标题 -->
+                    {% block header %}{% endblock %}
+
+                    <!-- 页面内容 -->
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

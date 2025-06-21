@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}病人管理 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-user-injured"></i> 病人管理</h1>
+    <a href="{{ url_for('patient_add') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> 添加病人
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">病人信息列表</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>年龄</th>
+                        <th>电话</th>
+                        <th>血型</th>
+                        <th>过敏史</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.pt_id }}</td>
+                        <td>
+                            <strong>{{ patient.name }}</strong>
+                            {% if patient.id_card %}
+                            <br><small class="text-muted">{{ patient.id_card }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ patient.gender }}</td>
+                        <td>{{ patient.age }}</td>
+                        <td>{{ patient.phone }}</td>
+                        <td>
+                            {% if patient.blood_type %}
+                            <span class="badge bg-info">{{ patient.blood_type }}型</span>
+                            {% else %}
+                            <span class="text-muted">未知</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if patient.allergy_history %}
+                            <span class="text-warning" title="{{ patient.allergy_history }}">
+                                <i class="fas fa-exclamation-triangle"></i> 有过敏史
+                            </span>
+                            {% else %}
+                            <span class="text-success">无过敏史</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-info" title="查看详情" onclick="viewPatient({{ patient.pt_id }})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-primary" title="编辑" onclick="editPatient({{ patient.pt_id }})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>暂无病人信息</p>
+                            <a href="{{ url_for('patient_add') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> 添加第一个病人
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if patients %}
+    <div class="card-footer">
+        <small class="text-muted">
+            <i class="fas fa-info-circle"></i> 
+            共 {{ patients|length }} 位病人
+        </small>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function viewPatient(patientId) {
+    window.location.href = "{{ url_for('patient_view', pt_id=0) }}".replace('0', patientId);
+}
+
+function editPatient(patientId) {
+    window.location.href = "{{ url_for('patient_edit', pt_id=0) }}".replace('0', patientId);
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}病历详情 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-file-medical"></i> 病历详情</h1>
+    <div>
+        <a href="{{ url_for('case_edit', case_id=case.case_id) }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> 编辑
+        </a>
+        <a href="{{ url_for('case_list') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> 返回
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">病历信息</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">病历ID</label>
+                        <p class="fw-bold">{{ case.case_id }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">病历状态</label>
+                        <p>
+                            {% if case.status == '就诊中' %}
+                            <span class="badge bg-warning">{{ case.status }}</span>
+                            {% elif case.status == '已完成' %}
+                            <span class="badge bg-success">{{ case.status }}</span>
+                            {% elif case.status == '需复诊' %}
+                            <span class="badge bg-info">{{ case.status }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ case.status }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">就诊日期</label>
+                        <p class="fw-bold fs-5">{{ case.visit_date.strftime('%Y年%m月%d日') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">就诊时间</label>
+                        <p class="fw-bold fs-5">{{ case.visit_time.strftime('%H:%M') }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">科室</label>
+                        <p>{{ case.department }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">复诊日期</label>
+                        <p>
+                            {% if case.follow_up_date %}
+                            {{ case.follow_up_date.strftime('%Y年%m月%d日') }}
+                            {% else %}
+                            无需复诊
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                {% if case.chief_complaint %}
+                <div class="mb-3">
+                    <label class="form-label text-muted">主诉</label>
+                    <div class="bg-light p-3 rounded">
+                        {{ case.chief_complaint }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if case.present_illness %}
+                <div class="mb-3">
+                    <label class="form-label text-muted">现病史</label>
+                    <div class="bg-light p-3 rounded">
+                        {{ case.present_illness }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if case.physical_examination %}
+                <div class="mb-3">
+                    <label class="form-label text-muted">体格检查</label>
+                    <div class="bg-light p-3 rounded">
+                        {{ case.physical_examination }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted">诊断</label>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded border-start border-primary border-4">
+                        <strong>{{ case.diagnosis }}</strong>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted">治疗方案</label>
+                    <div class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-4">
+                        {{ case.therapy }}
+                    </div>
+                </div>
+                
+                {% if case.doctor_advice %}
+                <div class="mb-3">
+                    <label class="form-label text-muted">医嘱</label>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded border-start border-warning border-4">
+                        {{ case.doctor_advice }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <label class="form-label text-muted">病历描述</label>
+                    <div class="bg-light p-3 rounded">
+                        {{ case.description }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">病人信息</h5>
+            </div>
+            <div class="card-body">
+                <label class="form-label text-muted">姓名</label>
+                <p class="fw-bold">{{ patient.name }}</p>
+                
+                <label class="form-label text-muted">性别</label>
+                <p>{{ patient.gender }}</p>
+                
+                <label class="form-label text-muted">年龄</label>
+                <p>{{ patient.age }} 岁</p>
+                
+                <label class="form-label text-muted">联系电话</label>
+                <p>{{ patient.phone }}</p>
+                
+                {% if patient.blood_type %}
+                <label class="form-label text-muted">血型</label>
+                <p><span class="badge bg-info">{{ patient.blood_type }}型</span></p>
+                {% endif %}
+                
+                {% if patient.allergy_history %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>过敏史：</strong>{{ patient.allergy_history }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">医疗团队</h5>
+            </div>
+            <div class="card-body">
+                <label class="form-label text-muted">主治医生</label>
+                <p class="fw-bold">{{ doctor.name }}</p>
+                <p class="text-muted">{{ doctor.department }} - {{ doctor.position }}</p>
+                
+                {% if nurse %}
+                <label class="form-label text-muted">护士</label>
+                <p>{{ nurse.name }}</p>
+                <p class="text-muted">{{ nurse.department }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

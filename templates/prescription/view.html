@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}处方详情 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-prescription-bottle"></i> 处方详情</h1>
+    <div>
+        <a href="{{ url_for('prescription_edit', prescription_id=prescription.prescription_id) }}" class="btn btn-primary">
+            <i class="fas fa-edit"></i> 编辑
+        </a>
+        <a href="{{ url_for('prescription_list') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> 返回
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">处方信息</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">处方ID</label>
+                        <p class="fw-bold">{{ prescription.prescription_id }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">处方状态</label>
+                        <p>
+                            {% if prescription.status == '已开具' %}
+                            <span class="badge bg-warning">{{ prescription.status }}</span>
+                            {% elif prescription.status == '已配药' %}
+                            <span class="badge bg-info">{{ prescription.status }}</span>
+                            {% elif prescription.status == '已发药' %}
+                            <span class="badge bg-success">{{ prescription.status }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ prescription.status }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">药品名称</label>
+                        <p class="fw-bold fs-5">{{ drug.name }}</p>
+                        <p class="text-muted">{{ drug.specification or '暂无规格' }} - {{ drug.manufacturer or '未知厂家' }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">处方数量</label>
+                        <p class="fw-bold fs-5">{{ prescription.quantity }} {{ drug.unit }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">用法用量</label>
+                        <p>{{ prescription.dosage }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">服用频率</label>
+                        <p>{{ prescription.frequency }}</p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">疗程</label>
+                        <p>{{ prescription.duration }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted">处方金额</label>
+                        <p class="fw-bold text-success fs-5">¥{{ prescription.price }}</p>
+                    </div>
+                </div>
+                
+                {% if prescription.notes %}
+                <div class="mb-3">
+                    <label class="form-label text-muted">备注</label>
+                    <div class="bg-light p-3 rounded">
+                        {{ prescription.notes }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">病人信息</h5>
+            </div>
+            <div class="card-body">
+                <label class="form-label text-muted">姓名</label>
+                <p class="fw-bold">{{ patient.name }}</p>
+                
+                <label class="form-label text-muted">性别</label>
+                <p>{{ patient.gender }}</p>
+                
+                <label class="form-label text-muted">年龄</label>
+                <p>{{ patient.age }} 岁</p>
+                
+                <label class="form-label text-muted">联系电话</label>
+                <p>{{ patient.phone }}</p>
+                
+                {% if patient.allergy_history %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>过敏史：</strong>{{ patient.allergy_history }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">关联病历</h5>
+            </div>
+            <div class="card-body">
+                <label class="form-label text-muted">病历ID</label>
+                <p class="fw-bold">{{ case.case_id }}</p>
+                
+                <label class="form-label text-muted">主治医生</label>
+                <p>{{ doctor.name }}</p>
+                <p class="text-muted">{{ doctor.department }} - {{ doctor.position }}</p>
+                
+                <label class="form-label text-muted">就诊日期</label>
+                <p>{{ case.visit_date.strftime('%Y年%m月%d日') }}</p>
+                
+                {% if case.diagnosis %}
+                <label class="form-label text-muted">诊断</label>
+                <p>{{ case.diagnosis|truncate(100) }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}药品管理 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-pills"></i> 药品管理</h1>
+    <a href="{{ url_for('drug_add') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> 添加药品
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">药品信息列表</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>药品名称</th>
+                        <th>分类</th>
+                        <th>规格</th>
+                        <th>单价</th>
+                        <th>库存</th>
+                        <th>生产厂家</th>
+                        <th>有效期</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for drug in drugs %}
+                    <tr>
+                        <td>{{ drug.drug_id }}</td>
+                        <td>
+                            <strong>{{ drug.name }}</strong>
+                            <br><small class="text-muted">{{ drug.unit }}</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ drug.category }}</span>
+                        </td>
+                        <td>{{ drug.specification or '暂无' }}</td>
+                        <td>
+                            <span class="text-success">¥{{ drug.price }}</span>
+                        </td>
+                        <td>
+                            {% if drug.stock_quantity < 50 %}
+                            <span class="badge bg-danger">{{ drug.stock_quantity }}</span>
+                            {% elif drug.stock_quantity < 100 %}
+                            <span class="badge bg-warning">{{ drug.stock_quantity }}</span>
+                            {% else %}
+                            <span class="badge bg-success">{{ drug.stock_quantity }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ drug.manufacturer or '未知' }}</td>
+                        <td>
+                            {% if drug.expiry_date %}
+                                {% set days_to_expire = (drug.expiry_date - today).days %}
+                                {% if days_to_expire < 30 %}
+                                <span class="text-danger">{{ drug.expiry_date.strftime('%Y-%m-%d') }}</span>
+                                {% elif days_to_expire < 90 %}
+                                <span class="text-warning">{{ drug.expiry_date.strftime('%Y-%m-%d') }}</span>
+                                {% else %}
+                                <span class="text-success">{{ drug.expiry_date.strftime('%Y-%m-%d') }}</span>
+                                {% endif %}
+                            {% else %}
+                            <span class="text-muted">未设置</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" title="编辑" onclick="editDrug({{ drug.drug_id }})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-info" title="库存调整" onclick="adjustStock({{ drug.drug_id }})">
+                                    <i class="fas fa-boxes"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>暂无药品信息</p>
+                            <a href="{{ url_for('drug_add') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> 添加第一个药品
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if drugs %}
+    <div class="card-footer">
+        <div class="row">
+            <div class="col-md-6">
+                <small class="text-muted">
+                    <i class="fas fa-info-circle"></i> 
+                    共 {{ drugs|length }} 种药品
+                </small>
+            </div>
+            <div class="col-md-6 text-end">
+                <small class="text-muted">
+                    <span class="badge bg-danger">红色</span> 库存不足 
+                    <span class="badge bg-warning">黄色</span> 库存警告
+                    <span class="badge bg-success">绿色</span> 库存充足
+                </small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function editDrug(drugId) {
+    window.location.href = "{{ url_for('drug_edit', drug_id=0) }}".replace('0', drugId);
+}
+
+function adjustStock(drugId) {
+    window.location.href = "{{ url_for('drug_stock', drug_id=0) }}".replace('0', drugId);
+}
+</script>
+{% endblock %} 

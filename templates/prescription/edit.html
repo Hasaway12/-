@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}编辑处方 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-prescription-bottle-alt"></i> 编辑处方</h1>
+    <a href="{{ url_for('prescription_view', prescription_id=prescription.prescription_id) }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> 返回
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="case_id" class="form-label">病历 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="case_id" name="case_id" required>
+                            <option value="">请选择病历</option>
+                            {% for row in cases %}
+                            {% set case = row[0] %}
+                            <option value="{{ case.case_id }}" {% if case.case_id == prescription.case_id %}selected{% endif %}>
+                                病历ID:{{ case.case_id }} - {{ row.patient_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="drug_id" class="form-label">药品 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="drug_id" name="drug_id" required onchange="updatePrice()">
+                            <option value="">请选择药品</option>
+                            {% for drug in drugs %}
+                            <option value="{{ drug.drug_id }}" data-price="{{ drug.price }}" {% if drug.drug_id == prescription.drug_id %}selected{% endif %}>
+                                {{ drug.name }} - ¥{{ drug.price }}/{{ drug.unit }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">数量 <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="{{ prescription.quantity }}" required onchange="updatePrice()">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="total_price" class="form-label">总价</label>
+                        <div class="input-group">
+                            <span class="input-group-text">¥</span>
+                            <input type="text" class="form-control" id="total_price" value="{{ prescription.price }}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="dosage" class="form-label">用法用量 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="dosage" name="dosage" value="{{ prescription.dosage }}" placeholder="如：每次2片" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="frequency" class="form-label">服用频率 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="frequency" name="frequency" value="{{ prescription.frequency }}" placeholder="如：每日3次" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">疗程 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="duration" name="duration" value="{{ prescription.duration }}" placeholder="如：连续服用7天" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="status" class="form-label">处方状态 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="已开具" {% if prescription.status == '已开具' %}selected{% endif %}>已开具</option>
+                            <option value="已配药" {% if prescription.status == '已配药' %}selected{% endif %}>已配药</option>
+                            <option value="已发药" {% if prescription.status == '已发药' %}selected{% endif %}>已发药</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="notes" class="form-label">备注</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="特殊注意事项">{{ prescription.notes or '' }}</textarea>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('prescription_view', prescription_id=prescription.prescription_id) }}" class="btn btn-outline-secondary me-2">取消</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 保存更改
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function updatePrice() {
+    const drugSelect = document.getElementById('drug_id');
+    const quantityInput = document.getElementById('quantity');
+    const totalPriceInput = document.getElementById('total_price');
+    
+    const selectedOption = drugSelect.options[drugSelect.selectedIndex];
+    const price = parseFloat(selectedOption.dataset.price) || 0;
+    const quantity = parseInt(quantityInput.value) || 0;
+    
+    const totalPrice = price * quantity;
+    totalPriceInput.value = totalPrice.toFixed(2);
+}
+</script>
+{% endblock %} 

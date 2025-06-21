@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}职工管理 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-users"></i> 职工管理</h1>
+    <a href="{{ url_for('staff_add') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> 添加职工
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">职工信息列表</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>年龄</th>
+                        <th>职位</th>
+                        <th>科室</th>
+                        <th>电话</th>
+                        <th>入职日期</th>
+                        <th>薪资</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for staff in staff_members %}
+                    <tr>
+                        <td>{{ staff.staff_id }}</td>
+                        <td>
+                            <strong>{{ staff.name }}</strong>
+                            {% if staff.email %}
+                            <br><small class="text-muted">{{ staff.email }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ staff.gender }}</td>
+                        <td>{{ staff.age }}</td>
+                        <td>
+                            <span class="badge bg-{% if staff.position == '医生' %}primary{% elif staff.position == '护士' %}success{% elif staff.position == '接待员' %}info{% else %}secondary{% endif %}">
+                                {{ staff.position }}
+                            </span>
+                        </td>
+                        <td>{{ staff.department or '暂无' }}</td>
+                        <td>{{ staff.phone }}</td>
+                        <td>{{ staff.hire_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <span class="text-{% if staff.salary >= 8000 %}success{% elif staff.salary >= 5000 %}warning{% else %}muted{% endif %}">
+                                ¥{{ staff.salary }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{% if staff.status == '在职' %}success{% else %}danger{% endif %}">
+                                {{ staff.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('staff_edit', staff_id=staff.staff_id) }}" 
+                                   class="btn btn-outline-primary" title="编辑">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ url_for('staff_delete', staff_id=staff.staff_id) }}" 
+                                   class="btn btn-outline-danger" title="删除"
+                                   onclick="return confirm('确定要删除职工 {{ staff.name }} 吗？')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="11" class="text-center text-muted">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>暂无职工信息</p>
+                            <a href="{{ url_for('staff_add') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> 添加第一个职工
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if staff_members %}
+    <div class="card-footer">
+        <small class="text-muted">
+            <i class="fas fa-info-circle"></i> 
+            共 {{ staff_members|length }} 位职工
+        </small>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

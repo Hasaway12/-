@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}预约管理 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-calendar-alt"></i> 预约管理</h1>
+    <button class="btn btn-primary" onclick="addAppointment()">
+        <i class="fas fa-plus"></i> 新增预约
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">预约信息列表</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>预约ID</th>
+                        <th>病人姓名</th>
+                        <th>预约医生</th>
+                        <th>预约日期</th>
+                        <th>预约时间</th>
+                        <th>科室</th>
+                        <th>预约类型</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in appointments %}
+                    {% set appointment = row[0] %}
+                    <tr>
+                        <td>{{ appointment.appointment_id }}</td>
+                        <td>{{ row.patient_name }}</td>
+                        <td>{{ row.doctor_name }}</td>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>{{ appointment.department }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ appointment.appointment_type }}</span>
+                        </td>
+                        <td>
+                            {% if appointment.status == '已预约' %}
+                            <span class="badge bg-primary">{{ appointment.status }}</span>
+                            {% elif appointment.status == '已就诊' %}
+                            <span class="badge bg-success">{{ appointment.status }}</span>
+                            {% elif appointment.status == '已取消' %}
+                            <span class="badge bg-danger">{{ appointment.status }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ appointment.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-info" title="查看" onclick="viewAppointment({{ appointment.appointment_id }})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-primary" title="编辑" onclick="editAppointment({{ appointment.appointment_id }})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">
+                            <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                            <p>暂无预约信息</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addAppointment() {
+    window.location.href = "{{ url_for('appointment_add') }}";
+}
+
+function viewAppointment(id) {
+    window.location.href = "{{ url_for('appointment_view', appointment_id=0) }}".replace('0', id);
+}
+
+function editAppointment(id) {
+    window.location.href = "{{ url_for('appointment_edit', appointment_id=0) }}".replace('0', id);
+}
+</script>
+{% endblock %} 

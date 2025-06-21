@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}新增病历 - 医疗信息管理系统{% endblock %}
+
+{% block header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="fas fa-file-medical-alt"></i> 新增病历</h1>
+    <a href="{{ url_for('case_list') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> 返回
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="pt_id" class="form-label">病人 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="pt_id" name="pt_id" required>
+                            <option value="">请选择病人</option>
+                            {% for patient in patients %}
+                            <option value="{{ patient.pt_id }}">{{ patient.name }} - {{ patient.phone }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="doctor_id" class="form-label">主治医生 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="doctor_id" name="doctor_id" required>
+                            <option value="">请选择医生</option>
+                            {% for doctor in doctors %}
+                            <option value="{{ doctor.staff_id }}">{{ doctor.name }} - {{ doctor.department }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="visit_date" class="form-label">就诊日期 <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="visit_date" name="visit_date" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="visit_time" class="form-label">就诊时间 <span class="text-danger">*</span></label>
+                        <input type="time" class="form-control" id="visit_time" name="visit_time" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="department" class="form-label">科室 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="department" name="department" required>
+                            <option value="">请选择科室</option>
+                            <option value="内科">内科</option>
+                            <option value="外科">外科</option>
+                            <option value="儿科">儿科</option>
+                            <option value="妇产科">妇产科</option>
+                            <option value="眼科">眼科</option>
+                            <option value="耳鼻喉科">耳鼻喉科</option>
+                            <option value="口腔科">口腔科</option>
+                            <option value="皮肤科">皮肤科</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="nurse_id" class="form-label">护士</label>
+                        <select class="form-select" id="nurse_id" name="nurse_id">
+                            <option value="">请选择护士（可选）</option>
+                            {% for nurse in nurses %}
+                            <option value="{{ nurse.staff_id }}">{{ nurse.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="chief_complaint" class="form-label">主诉</label>
+                <textarea class="form-control" id="chief_complaint" name="chief_complaint" rows="2" placeholder="患者主要症状和就诊原因"></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="present_illness" class="form-label">现病史</label>
+                <textarea class="form-control" id="present_illness" name="present_illness" rows="3" placeholder="现在疾病的发生、发展过程"></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="diagnosis" class="form-label">诊断 <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="diagnosis" name="diagnosis" rows="2" placeholder="医生诊断结果" required></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="therapy" class="form-label">治疗方案 <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="therapy" name="therapy" rows="3" placeholder="治疗计划和方案" required></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="description" class="form-label">病历描述 <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="description" name="description" rows="4" placeholder="详细的病历记录" required></textarea>
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('case_list') }}" class="btn btn-outline-secondary me-2">取消</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> 创建病历
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// 设置默认日期为今天
+document.getElementById('visit_date').value = new Date().toISOString().split('T')[0];
+// 设置默认时间为当前时间
+const now = new Date();
+document.getElementById('visit_time').value = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+</script>
+{% endblock %} 
